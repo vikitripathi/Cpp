@@ -11,6 +11,11 @@ using namespace std;
 int * getRandom( )
 {
   static int  r[10];
+  /*
+  The static storage class instructs the compiler to keep a local variable in existence during the life-time of the program 
+  instead of creating and destroying it each time it comes into and goes out of scope. Therefore, making local variables static
+   allows them to maintain their values between function calls.
+   */
 
   // set the seed
   srand( (unsigned)time( NULL ) );//you  can fix the seed to have same random no returned!!!
