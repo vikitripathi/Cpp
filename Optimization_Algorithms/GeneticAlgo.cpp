@@ -61,24 +61,24 @@ int * random(int j,int Np)
 }
 
 //Define Cost Function
-int Costf(int x[])
+double Costf(double x[])
 {
 	//x[] is m dimensional
-	int i=x[0]*2+x[1]*2+x[2]*2;;//to store the cost function
+	double i=x[0]*2+x[1]*2+x[2]*2;;//to store the cost function
 	return i;
 }
 
-int ** geneticOptimize(int domain[][n],int m,int maxiter,int f,int Cr,int Np)
+double ** geneticOptimize(int domain[][n],int m,int maxiter,double f,double Cr,int Np)
 {
 	/* initialize random seed: */
 	srand(time(0));
     //Initialisation of the first generation of population
    
-    int **X=0;//target vector
-    X=new int *[Np];
+    double **X=0;//target vector
+    X=new double *[Np];
     for (int i = 0; i < Np; ++i)
 	{
-		X[i] = new int[m];
+		X[i] = new double[m];
 		/* code */
 		for (int j = 0; j < m; ++j)
 		{
@@ -91,14 +91,16 @@ int ** geneticOptimize(int domain[][n],int m,int maxiter,int f,int Cr,int Np)
 	{
 		/* code */
 		//Mutation : to expand the search space
-		int V[Np][m];//Mutant or Donor Vector
+		double V[Np][m];//Mutant or Donor Vector
 		for (int i = 0; i < Np; ++i)
 		{
 			//select 3 random no(r1,r2,r3) b/w 0 to np which are distinct and nt equal to i.
 			int *a;
 			int r1,r2,r3;
 			a=random(i,Np);
-			r1=*a,r2=*(a+1),r3=*(a+2);
+			r1=*a;
+			r2=*(a+1);
+			r3=*(a+2);
 			/* code */
 			for (int j = 0; j < m; ++j)
 			{
@@ -107,7 +109,7 @@ int ** geneticOptimize(int domain[][n],int m,int maxiter,int f,int Cr,int Np)
 			}
 		}
 		//Crossover : to increase diversity of perturbed vectors
-		int U[Np][m];//Trial Vector
+		double U[Np][m];//Trial Vector
 		for (int i = 0; i < Np; ++i)
 		{
 			/* code */
@@ -137,15 +139,16 @@ int main ()
   cout<<"Optimization to find the min of the given cost function (x1*2+x2*2+x3*2) begins"<<endl;
   cout<<"----------------"<<endl;
   int domain[][2]={{-5,5},{-5,5},{-5,5}};
-  int maxiter=100, f=0.5,Cr=0.5, Np=10,m=3;
-  int **X;
+  int maxiter=100, Np=10,m=3;
+  double f=0.5,Cr=0.5;
+  double **X;
   X=geneticOptimize(domain,m,maxiter, f,Cr, Np);
   // print contents of the array2D
   for (int h = 0; h < Np; h++)
     {
         for (int w = 0; w < m; w++)
         {
-            printf("%i,", X[h][w]);
+            printf("%f,", X[h][w]);//%f is the correct format for double
         }
         printf("\n");
     }
