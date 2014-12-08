@@ -13,6 +13,8 @@ To Execute : Change to the directory which contains the .cpp file , then in Term
 #include <cstdlib> /* srand, rand */
 #include <time.h> /* time */
 #include <cmath>
+#include <termios.h>
+#include <unistd.h>			 
 using namespace std;
 /*
 The goal of any optimization algorithm is to find a set of inputs that minimizes the cost function, so the
@@ -30,6 +32,18 @@ random searching and hill climbing can get stuck in local  minima
 Genetics algorithms are way to avoid  getting struck in local minima and find the best overall minima ,called the
 global minimum, which is what optimization algorithms are ultimately supposed to find.
  */
+int getch(void)
+{
+	struct termios oldattr, newattr;
+	int ch;
+	tcgetattr( STDIN_FILENO, &oldattr );
+	newattr = oldattr;
+	newattr.c_lflag &= ~( ICANON | ECHO );
+	tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+	ch = getchar();
+	tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+	return ch;
+}
 const int n = 2;
 //a function to be used in  random(int,int)
 bool p_in_n(int n[],int p,int k)
@@ -171,6 +185,7 @@ double ** geneticOptimize(int domain[][n],int m,int maxiter,double f,double Cr,i
 					}
 			cout<<"}"<<" ----->> "<<Costf(X[i])<<endl;		
 		}
+		getch();
 	}
 	return X;//return a 2d array X 
 }
