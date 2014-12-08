@@ -39,22 +39,32 @@ bool p_in_n(int n[],int p,int k)
 		/* code */
 		if (n[i]==p)
 		{
-			/* code */return false;
+			/* code */
+			return false;
 		}
 	}
 	return true;
 }
 
-//Define function to return 3 distinct random nos which are also not equal to another(j) no b/w a given range(0-Np)
+//Define function to return 3 distinct random nos which are also not equal to another(j) no b/w a given range[0-Np)
 int * random(int j,int Np)
 {
 	static int n[3];//static :check reason
 	for(int k=0;k<3;++k)
 	{
 		int p;
-		do{
-			p=rand() % Np;
-		}while(p==j || p_in_n(n,p,k));
+		if(k==0)
+		{
+			do{
+				p=rand() % Np;
+			}while(p==j);
+		}
+		else
+		{
+			do{
+				p=rand() % Np;
+			}while(p==j || p_in_n(n,p,k));
+		}
 		n[k]=p;
 	}
 	return n;//return an array
@@ -76,21 +86,27 @@ double ** geneticOptimize(int domain[][n],int m,int maxiter,double f,double Cr,i
    
     double **X=0;//target vector
     X=new double *[Np];
+    cout<<"Initialisation for Generation 1(Target Vector)"<<endl;
     for (int i = 0; i < Np; ++i)
 	{
 		X[i] = new double[m];
 		/* code */
+		cout<<"{";
 		for (int j = 0; j < m; ++j)
 		{
 			/* code */
 			X[i][j]=domain[j][0]+(domain[j][1]-domain[j][0])*((double) rand() / (RAND_MAX));
+			cout<<X[i][j]<<"  ";
 		}
+		cout<<"}"<<" ----->> "<<Costf(X[i])<<endl;
 	}
 	//Main loop , controlling Generations
 	for (int gen = 0; gen < maxiter; ++gen)
 	{
 		/* code */
 		//Mutation : to expand the search space
+		cout<<"-----------------"<<endl;
+		cout<<"Mutant Vector for Generation "<<(gen+1)<<endl;
 		double V[Np][m];//Mutant or Donor Vector
 		for (int i = 0; i < Np; ++i)
 		{
@@ -102,33 +118,58 @@ double ** geneticOptimize(int domain[][n],int m,int maxiter,double f,double Cr,i
 			r2=*(a+1);
 			r3=*(a+2);
 			/* code */
+			cout<<"{";
 			for (int j = 0; j < m; ++j)
 			{
 				/* code */
 				V[i][j]=X[r1][j]+f*(X[r2][j]-X[r3][j]);
+				cout<<V[i][j]<<"  ";
 			}
+			cout<<"}"<<endl;
 		}
+		cout<<"------------------"<<endl;
 		//Crossover : to increase diversity of perturbed vectors
 		double U[Np][m];//Trial Vector
+		cout<<"Crossover for Generation"<<(gen+1)<<endl;
 		for (int i = 0; i < Np; ++i)
 		{
 			/* code */
+			cout<<"{";
 			for (int j = 0; j < m; ++j)
 			{
 				/* code */
 				if(((double) rand() / (RAND_MAX))<=Cr)
-					U[i][j]=V[i][j];
+				{
+				   	U[i][j]=V[i][j];
+				   	cout<<U[i][j]<<"  ";
+				}
 				else
+				{
 					U[i][j]=X[i][j];
+					cout<<U[i][j]<<"  ";
+				}
 			}
+			cout<<"}"<<endl;
 		}
+		cout<<"---------------------"<<endl;
 		//Selection : Survival of the fittest , to select the fittest from the target vector and trial vector
+		cout<<"Selection(Target Vector) for Generation "<<(gen+2)<<endl;
 		for (int i = 0; i < Np; ++i)
 		{
 			/* code */
+			cout<<"{";
 			if(Costf(U[i])<Costf(X[i]))
 				for (int j = 0; j < m; ++j)
-					X[i][j]=U[i][j];
+					{
+						X[i][j]=U[i][j];
+						cout<<X[i][j]<<"  ";	
+					}
+			else
+				for (int j = 0; j < m; ++j)
+					{
+						cout<<X[i][j]<<"  ";	
+					}
+			cout<<"}"<<" ----->> "<<Costf(X[i])<<endl;		
 		}
 	}
 	return X;//return a 2d array X 
@@ -136,7 +177,7 @@ double ** geneticOptimize(int domain[][n],int m,int maxiter,double f,double Cr,i
 
 int main ()
 {
-  cout<<"Optimization to find the min of the given cost function (x1*2+x2*2+x3*2) begins"<<endl;
+  cout<<"  Optimization to find the min of the given cost function (x1*2+x2*2+x3*2) begins"<<endl;
   cout<<"----------------"<<endl;
   int domain[][2]={{-5,5},{-5,5},{-5,5}};
   int maxiter=100, Np=10,m=3;
@@ -144,6 +185,7 @@ int main ()
   double **X;
   X=geneticOptimize(domain,m,maxiter, f,Cr, Np);
   // print contents of the array2D
+  cout<<"==============================="<<endl;
   for (int h = 0; h < Np; h++)
     {
         for (int w = 0; w < m; w++)
@@ -152,7 +194,7 @@ int main ()
         }
         printf("\n");
     }
-  cout<<"Optimization ends"<<endl;
+  cout<<"  Optimization ends"<<endl;
   cout<<"----------------"<<endl;
   return 0;
 
